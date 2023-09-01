@@ -64,9 +64,32 @@ local convert_data_units = function(units)
   print("NOT IMPLEMENTED")
 end
 
-local convert_temp = function(units)
-  -- TODO - function to convert temperature F->C or C->F (e.g. toggle between them?)
-  print("NOT IMPLEMENTED")
+local toggle_temp = function()
+  -- add . to iskeyword and remove at the end
+
+  local iskeyword_orig = vim.opt.iskeyword
+  vim.opt.iskeyword:append(".")
+  local data = vim.fn.expand("<cword>")
+
+
+  local pattern = '^(.+)([FfCc])$'
+
+  local t, u = string.match(data, pattern)
+
+  local temp = tonumber(t)
+  if string.lower(u) == 'c' then
+    -- currently celcius, convert to fahrenheit
+    temp = temp * 9 / 5 + 32
+    outchar = 'F'
+  else
+    -- currently fahrenheit, convert to celcius
+    temp = (temp - 32) * 5 / 9
+    outchar = 'C'
+  end
+
+  replacedata(tostring(temp) .. outchar)
+
+  vim.opt.iskeyword = iskeyword_orig -- reset iskeyword to original
 end
 
 -- API functions
@@ -102,17 +125,8 @@ M.conv_tbytes = function()
 end
 
 -- temperature conversions
-M.conv_c2f = function()
-  -- Can check unit or if non then assume number is C
-  return convert_temp("f")
-end
-M.conv_f2c = function()
-  -- Can check unit or if non then assume number is F
-  return convert_temp("c")
-end
 M.conv_toggletemp = function()
-  -- TODO check what is the current unit (e.g. look for C or F suffix)
-  return convert_temp("c")
+  return toggle_temp()
 end
 
 return M
