@@ -204,14 +204,13 @@ M.conv_toggletemp = function()
 end
 
 M.run = function(command)
+  -- print(vim.inspect(vim.tbl_keys(require "nvim-superconv")))
   local cmd = string.gsub(command.args, '^%s*(.-)%s*$', '%1')
   for _, v in pairs(vim.tbl_keys(require "nvim-superconv")) do
-    print("input: '" .. cmd .. "'")
-    print("table: '" .. v .. "'")
+    -- print("input: '" .. cmd .. "'")
+    -- print("table: '" .. v .. "'")
     if v == cmd then
-      cmd = "M." .. cmd
-      print(cmd)
-      -- FIXME can't seem to run the command
+      cmd = "return require'nvim-superconv'." .. cmd .. "(...)"
       loadstring(cmd)()
       break
     end
