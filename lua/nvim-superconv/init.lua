@@ -41,13 +41,13 @@ local convert_time = function(units)
     end
   elseif c == "h" then
     if units == "s" then
-      multiplier = 60 * 60
+      multiplier = 60 ^ 2
     elseif units == "m" then
       multiplier = 60
     end
   elseif c == "d" then
     if units == "s" then
-      multiplier = 60 * 60 * 24
+      multiplier = 60 ^ 2 * 24
     elseif units == "m" then
       multiplier = 60 * 24
     elseif units == "h" then
