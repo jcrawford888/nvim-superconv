@@ -1,0 +1,5 @@
+describe("nvim-superconv", function()
+  it("can be required", function()
+    require("nvim-superconv")
+  end)
+end)
