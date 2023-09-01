@@ -60,8 +60,74 @@ local convert_time = function(units)
 end
 
 local convert_data_units = function(units)
-  -- TODO - function to convert to bytes, kbytes, etc
-  print("NOT IMPLEMENTED")
+  local data = vim.fn.expand("<cword>")
+  local pattern = '^(%d+)([KMGT])B$'
+
+  local t, u = string.match(data, pattern)
+
+  if (t == nil or u == nil) then
+    print("no matching conversion pattern:" .. pattern)
+    return
+  end
+
+  if units == nil then
+    units = 'B'
+  end
+
+  local multiplier = 1
+  if u == 'K' then
+    if units == "B" then
+      multiplier = 1024
+    else
+      -- no change
+      print("no change. Desired unit:" .. units .. "B is >= to current unit: " .. u .. "B")
+      return
+    end
+  elseif u == 'M' then
+    if units == "B" then
+      multiplier = 1024 ^ 2
+    elseif units == "K" then
+      multiplier = 1024
+    else
+      -- no change
+      print("no change. Desired unit:" .. units .. "B is >= to current unit: " .. u .. "B")
+      return
+    end
+  elseif u == 'G' then
+    if units == "B" then
+      multiplier = 1024 ^ 3
+    elseif units == "K" then
+      multiplier = 1024 ^ 2
+    elseif units == "M" then
+      multiplier = 1024
+    else
+      -- no change
+      print("no change. Desired unit:" .. units .. "B is >= to current unit: " .. u .. "B")
+      return
+    end
+  elseif u == 'T' then
+    if units == "B" then
+      multiplier = 1024 ^ 4
+    elseif units == "K" then
+      multiplier = 1024 ^ 3
+    elseif units == "M" then
+      multiplier = 1024 ^ 2
+    elseif units == "G" then
+      multiplier = 1024
+    else
+      -- no change
+      print("no change. Desired unit:" .. units .. "B is >= to current unit: " .. u .. "B")
+      return
+    end
+  end
+
+  t = t * multiplier
+
+  if units == 'B' then
+    replacedata(t)
+  else
+    replacedata(tostring(t) .. units .. 'B')
+  end
 end
 
 local toggle_temp = function()
@@ -75,6 +141,11 @@ local toggle_temp = function()
   local pattern = '^(.+)([FfCc])$'
 
   local t, u = string.match(data, pattern)
+
+  if (t == nil or u == nil) then
+    print("no matching conversion pattern:" .. pattern)
+    return
+  end
 
   local temp = tonumber(t)
   if string.lower(u) == 'c' then
@@ -112,16 +183,19 @@ end
 
 -- data units conversions
 M.conv_bytes = function()
-  return convert_data_units("b")
+  return convert_data_units()
+end
+M.conv_kbytes = function()
+  return convert_data_units("K")
 end
 M.conv_mbytes = function()
-  return convert_data_units("m")
+  return convert_data_units("M")
 end
 M.conv_gbytes = function()
-  return convert_data_units("g")
+  return convert_data_units("G")
 end
 M.conv_tbytes = function()
-  return convert_data_units("t")
+  return convert_data_units("T")
 end
 
 -- temperature conversions
