@@ -1,17 +1,19 @@
 local M = {}
 
-M.test = function()
-  print("Yay it works!")
+local replacedata = function(data)
+  vim.cmd("normal! diw")                                                 --delete the current numbering section
+  local char = vim.fn.getline('.'):sub(vim.fn.col('.'), vim.fn.col('.')) -- get character under cursor after deletion
+  local action = "i"
+  if char ~= " " then
+    -- at the end of the line just append
+    action = "a"
+  end
+  -- inject the converted time into the buffer
+  vim.cmd("normal! " .. action .. tostring(data))
 end
 
--- TODO - function to convert to bytes, kbytes, etc
-
--- TODO - function to convert temperature F->C or C->F (e.g. toggle between them?)
-
--- FIXME perhaps use a param for different time ranges (e.g. 5d in hours, or 7h in minutes)
-M.convert = function(units)
+local convert_time = function(units)
   local data = vim.fn.expand("<cword>")
-  print(data)
   if units == nil then
     units = 's'
   end
@@ -26,8 +28,6 @@ M.convert = function(units)
   end
 
   local t, c = string.match(data, pattern)
-  vim.print(t)
-  vim.print(c)
 
   if (t == nil or c == nil) then
     print("no matching conversion pattern:" .. pattern)
@@ -54,38 +54,65 @@ M.convert = function(units)
       multiplier = 24
     end
   end
-
   t = t * multiplier
 
-  print(t)
+  replacedata(t)
+end
 
-  print("before")
-  local before = vim.fn.col('.')
-  print(vim.fn.col('.'))
-  print(vim.fn.col('$') - 1)
+local convert_data_units = function(units)
+  -- TODO - function to convert to bytes, kbytes, etc
+  print("NOT IMPLEMENTED")
+end
 
-  -- works but if the conversion is at the end of the line then need to append to the line instead of using 'i'
-  vim.cmd("normal! diw") --delete the current numbering section
-  print("after")
-  local after = vim.fn.col('.')
-  print(vim.fn.col('.'))
-  print(vim.fn.col('$') - 1)
+local convert_temp = function(units)
+  -- TODO - function to convert temperature F->C or C->F (e.g. toggle between them?)
+  print("NOT IMPLEMENTED")
+end
 
-  print('before:' .. before)
-  print('after:' .. after)
+-- API functions
+-- time conversions
+M.conv_sec = function()
+  return convert_time("s")
+end
 
-  -- FIXME - finally fixed the calculation, clean up this line?
-  local char = vim.fn.getline('.'):sub(vim.fn.col('.'), vim.fn.col('.')) -- get character under cursort after deletion
-  print('char:"' .. char .. '"')
-  if char ~= " " then
-    -- at the end of the line just append
-    print('appending')
-    vim.cmd("normal! a" .. tostring(t))
-  else
-    --otherwise insert
-    print('inserting')
-    vim.cmd("normal! i" .. tostring(t))
-  end
+M.conv_min = function()
+  return convert_time("m")
+end
+
+M.conv_hour = function()
+  return convert_time("h")
+end
+
+M.conv_day = function()
+  return convert_time("d")
+end
+
+-- data units conversions
+M.conv_bytes = function()
+  return convert_data_units("b")
+end
+M.conv_mbytes = function()
+  return convert_data_units("m")
+end
+M.conv_gbytes = function()
+  return convert_data_units("g")
+end
+M.conv_tbytes = function()
+  return convert_data_units("t")
+end
+
+-- temperature conversions
+M.conv_c2f = function()
+  -- Can check unit or if non then assume number is C
+  return convert_temp("f")
+end
+M.conv_f2c = function()
+  -- Can check unit or if non then assume number is F
+  return convert_temp("c")
+end
+M.conv_toggletemp = function()
+  -- TODO check what is the current unit (e.g. look for C or F suffix)
+  return convert_temp("c")
 end
 
 return M
