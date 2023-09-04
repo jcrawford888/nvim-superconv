@@ -4,11 +4,123 @@
 
 CONTENTS                                                      *nvim-superconv*
 Introduction ................ |nvim-superconv-introduction|
+Installation ................ |nvim-superconv-installation|
 Commands .................... |nvim-superconv-commands|
+    Data Units  ............. |nvim-superconv-dataunits|
+    Time Units  ............. |nvim-superconv-timeunits|
+    Temperature Units  ...... |nvim-superconv-temperatureunits|
+License ..................... |nvim-superconv-license|
 
 INTRODUCTION                                     *nvim-superconv-introduction*
+==============================================================================
+
+This plugin is used to read the word under your cursor and convert to
+a choice unit.  For example converting hours into seconds or GB into MB.
+
+The word under the cursor will be converted and then replaced with the result
+of the unit conversion.
+
+This is useful when setting up configuration files, caching timeouts etc.
+
+
+INSTALLATION                                     *nvim-superconv-installation*
+==============================================================================
+
+Use your favorite neovim plugin manager and install the following:
+
+
+Using `packer`
+
+```lua
+use { "jcrawford888/nvim-superconv" }
+```
+
+Using `lazy.nvim`
+
+```lua
+{ "jcrawford888/nvim-superconv" }
+```
 
 
 COMMANDS                                             *nvim-superconv-commands*
+==============================================================================
+
+You can run the commands directly as lua commands as follows:
+
+```lua
+:lua require("nvim-superconv").conv_bytes()
+```
+
+or use the command
+
+```lua
+:Superconv conv_bytes
+```
+
+It's recommended to make a key map for frequently used commands.
+
+```lua
+vim.keymap.set('n', '<leader>scb', "<cmd>lua require("nvim-superconv").conv_bytes()", { silent = true, noremap = true })
+or
+vim.keymap.set('n', '<leader>scb', "<cmd>:Superconv conv_bytes<cr>", { silent = true, noremap = true })
+```
+
+DATA UNITS                                          *nvim-superconv-dataunits*
+==============================================================================
+
+conv_byte                                           *nvim-superconv-conv_byte*
+
+    Read the unit under the cursor and convert to bytes
+    Example: 100MB -> 104857600 
+
+conv_kbyte                                         *nvim-superconv-conv_kbyte*
+
+    Read the unit under the cursor and convert to kilobytes
+    Example: 100MB -> 102400KB 
+
+conv_mbyte                                         *nvim-superconv-conv_mbyte*
+
+    Read the unit under the cursor and convert to megabytes
+    Example: 10GB -> 10240MB 
+
+conv_gbyte                                         *nvim-superconv-conv_gbyte*
+
+    Read the unit under the cursor and convert to gigabytes
+    Example: 1TB -> 1024GB 
+
+
+TIME UNITS                                          *nvim-superconv-timeunits*
+==============================================================================
+
+conv_sec                                             *nvim-superconv-conv_sec*
+
+    Read the unit under the cursor and convert to seconds
+    Example: 4h -> 14400
+
+conv_min                                             *nvim-superconv-conv_min*
+
+    Read the unit under the cursor and convert to minutes
+    Example: 4h -> 240 
+
+conv_hour                                           *nvim-superconv-conv_hour*
+
+    Read the unit under the cursor and convert to hours
+    Example: 4d -> 96 
+
+
+TEMPERATURE UNITS                            *nvim-superconv-temperatureunits*
+==============================================================================
+
+conv_toggletemp                               *nvim-superconv-conv_toggletemp*
+
+    Toggles the temperature between celcius and farenheit depending on the unit
+    suffix C or F.
+    Example: 5.7C -> 42.26F  or 72.0F -> 22.2C 
+
+================================================================================
+LICENSE                                               *nvim-superconv-license*
+
+Distributed under the MIT License (see LICENSE.txt).
+
 
  vim:tw=78:ts=8:sw=4:sts=4:et:ft=help:norl:
