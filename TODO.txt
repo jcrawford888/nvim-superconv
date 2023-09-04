@@ -1,0 +1,5 @@
+- check data conversions - tb doesn't look right
+- conversion to days (conv_day) not needed?
+- Finish readme
+- Fix any issues with help
+  - see how to generate help tags or is it automatic?
