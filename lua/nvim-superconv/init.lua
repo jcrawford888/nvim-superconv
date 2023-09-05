@@ -194,9 +194,6 @@ end
 M.conv_gbytes = function()
   return convert_data_units("G")
 end
-M.conv_tbytes = function()
-  return convert_data_units("T")
-end
 
 -- temperature conversions
 M.conv_toggletemp = function()
