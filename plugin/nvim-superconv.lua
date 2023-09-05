@@ -15,6 +15,17 @@ end, {
   complete = function(_, line)
     local builtin_list = vim.tbl_keys(require "nvim-superconv")
 
+    -- Remove the 'run' routine from the list
+    local toremove = nil
+    for i = 1, #builtin_list do
+      if builtin_list[i] == "run" then
+        toremove = i
+        break
+      end
+    end
+
+    table.remove(builtin_list, toremove)
+
     local l = vim.split(line, "%s+")
     local n = #l - 2
 
